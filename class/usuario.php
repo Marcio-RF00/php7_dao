@@ -39,6 +39,8 @@ class Usuario {
 		$this -> dtcadastro = $value;
 	}
 
+
+/*------COMANDOS para busca-------*/
 	public function loadById($id) {
 
 		$sql = new Sql();
@@ -50,12 +52,7 @@ class Usuario {
 
 		if (count($results) > 0) {
 
-			$row = $results[0];
-
-			$this -> setIdusuario($row['idusuario']);
-			$this -> setDescrlogin($row['descrlogin']);
-			$this -> setDescrsenha($row['descrsenha']);
-			$this -> setDtcadastro(new DateTime($row['dtcadastro']));
+			$this -> setDados($results[0]);
 		}
 	}
 
@@ -88,12 +85,8 @@ class Usuario {
 
 		if (count($results) > 0) {
 
-			$row = $results[0];
-
-			$this -> setIdusuario($row['idusuario']);
-			$this -> setDescrlogin($row['descrlogin']);
-			$this -> setDescrsenha($row['descrsenha']);
-			$this -> setDtcadastro(new DateTime($row['dtcadastro']));
+			$this -> setDados($results[0]);
+			
 		} else {
 
 			throw new Exception("Login e/ou senha inválidos.");
@@ -101,6 +94,58 @@ class Usuario {
 
 	}
 
+/*-------COMANDOS para inserção--------*/
+	public function insert() {
+
+		$sql = new Sql();
+
+		$results = $sql -> select("CALL sp_usuarios_insert (:LOGIN, :PASSWORD
+		)", array(
+
+			':LOGIN' => $this -> getDescrlogin(),
+			':PASSWORD' => $this -> getDescrsenha()
+
+		));
+
+		if (count($results) > 0) {
+			$this -> setDados($results[0]);
+		}
+
+	}
+
+/*------COMANDOS para modificação------*/
+	public function update($login, $password) {
+
+		$this -> setDescrlogin($login);
+		$this -> setDescrsenha($password);
+
+		$sql = new Sql();
+
+		$sql -> query("UPDATE tb_usuarios SET descrlogin = :LOGIN, descrsenha = :PASSWORD WHERE idusuario = :ID", array(
+
+			':LOGIN' => $this -> getDescrlogin(),
+			':PASSWORD' => $this -> getDescrsenha(),
+			':ID' => $this -> getIdusuario()	
+		));
+	}
+
+
+
+//-----------------------------------------------\\
+	public function setDados($dados) {
+
+		$this -> setIdusuario($dados['idusuario']);
+			$this -> setDescrlogin($dados['descrlogin']);
+			$this -> setDescrsenha($dados['descrsenha']);
+			$this -> setDtcadastro(new DateTime($dados['dtcadastro']));
+	}
+
+	public function __construct($login = "", $password = "") {
+
+		$this -> setDescrlogin($login);
+		$this -> setDescrsenha($password);
+
+	}
 
 	public function __toString() {
 
