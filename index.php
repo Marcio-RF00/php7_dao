@@ -32,11 +32,19 @@ echo $aluno;*/
 /*--COMANDOS de modificação--*/
 
 //fazendo um update
+/*$usuario = new Usuario();
+$usuario -> loadById(5);
+$usuario -> update("fabiano", "54321");
+echo $usuario;*/
+
+/*--COMANDOS de deletar*/
+
+//fazendo um delete
 $usuario = new Usuario();
 
-$usuario -> loadById(5);
+$usuario -> loadById(1);
 
-$usuario -> update("fabiano", "54321");
+$usuario -> delete();
 
 echo $usuario;
 
